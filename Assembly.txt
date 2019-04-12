@@ -1,0 +1,231 @@
+add $r1 $r0 $r0        // useless instruction
+add $r1 $r0 $r0
+add $r2 $r0 $r0
+add $r3 $r0 $r0
+add $r4 $r0 $r0
+add $r5 $r0 $r0
+add $r6 $r0 $r0
+add $r7 $r0 $r0
+add $r8 $r0 $r0
+add $r9 $r0 $r0
+add $r10 $r0 $r0
+add $r11 $r0 $r0
+add $r12 $r0 $r0
+add $r13 $r0 $r0
+add $r15 $r0 $r0        //registers cleared
+addi $r6 $r0 1         // Storing LSB of dividend
+addi $r15 $r0 8        // put 8 into r15
+ld $r1 $r15            // load MSB of divisor into r1
+addi $r15 $r15 1       // put 9 into r15
+ld $r2 $r15            // load LSB of divisor into r2
+cmp $r0 $r1            // compare MSB of divisor to 0
+bne nonzero            // branch to start of inverse
+cmp $r0 $r2            // compare LSB of divisor to 0
+beq zero               // if number is zero branch
+LABL nonzero           // start of inverse
+addi $r10 $r0 16       // Put 16 into register 10
+addi $r9 $r0 0         // Counter for loop
+LABL check             // Still doing loop?
+cmp $r9 $r10           // Loop 16 times
+bge  inverseLoopEnd    // End of loop
+lsh $r4 $r4            // $r4 holds the LSB of quotient and we shift it left
+lshc $r3 $r3           // Shifts MSB left and brings in the carry
+cmp $r5 $r1            // Compare MSB of dividend to MSB of the divisor
+bgt subtract
+blt nSubtract
+cmp $r6 $r2            // Equal to at this line
+blt nSubtract
+LABL subtract
+sub $r8 $r6 $r2        // LSB dividend - LSB divisor = LSB subtract
+subc $r7 $r5 $r1        // MSB dividend - MSB divisor = MSB subtract
+add $r5 $r7 $r0        // Store MSB subtract in MSB dividend
+add $r6 $r8 $r0        // Store LSB subtract in  LSB dividend
+addi $r4 $r4 1
+LABL nSubtract
+lsh $r6 $r6
+lshc $r5 $r5
+addc $r13 $r0 $r0      // Store carry out for the round check
+addi $r9 $r9 1         // Increment counter
+jmp check              // Jump to top of loop
+LABL inverseLoopEnd
+jmp zeroEnd
+LABL zero              // if number = 0
+addi $r15 $r0 1
+sub $r3 $r0 $r15          // Roll over to 255
+sub $r4 $r0 $r15
+jmp noround
+LABL zeroEnd
+cmp $r13 $r0
+bne round
+cmp $r5 $r1
+blt noround
+bgt round
+cmp $r6 $r2
+blt noround
+LABL round 
+addi $r4 $r4 1
+addc $r3 $r3 $r0 
+LABL noround
+addi $r15 $r0 10
+st $r15 $r3
+addi $r15 $r0 11
+st $r15 $r4                  
+add $r1 $r0 $r0        
+add $r1 $r0 $r0
+add $r2 $r0 $r0
+add $r3 $r0 $r0
+add $r4 $r0 $r0
+add $r5 $r0 $r0
+add $r6 $r0 $r0
+add $r7 $r0 $r0
+add $r8 $r0 $r0
+add $r9 $r0 $r0
+add $r10 $r0 $r0
+add $r11 $r0 $r0
+add $r12 $r0 $r0
+add $r13 $r0 $r0
+add $r15 $r0 $r0        //registers cleared to start prog 2 PROGRAM 1 ENDS HERE
+add $r0 $r0 $r0        //useless instruction
+ld $r6 $r0             // Load MSB of dividend into r6
+addi $r15 $r0 1        // put address 1 into $r15
+ld $r7 $r15            // Load LSB of dividend into r7
+addi $r15 $r0 2        // put 2 into r15
+ld $r2 $r15            // load LSB of divisor into r2
+cmp $r0 $r1            // compare MSB of divisor to 0
+bne subtract           // branch to start of divide where you keep subtracting divisor from dividend
+cmp $r0 $r2            // compare LSB of divisor to 0
+beq zeros              // if number is zero branch
+LABL subtraction          // check to see if you need to subtract still
+cmp $r6 $r0            // Compare MSB of dividend to 0
+bne subtractStart  
+cmp $r7 $r2            // Compare LSB of dividend to LSB of divisor 
+blt subtractLoopEnd
+LABL subtractStart     //Start of subtract loop
+sub $r9 $r7 $r2
+subc $r8 $r6 $r1
+add $r6 $r8 $r0
+add $r7 $r9 $r0
+addi $r4 $r4 1
+addc $r3 $r3 $r0
+jmp subtraction
+LABL subtractLoopEnd  //done doing dividend - divisor  CUT HERE
+addi $r10 $r0 9  //put in value 9 to compare loop counter to
+LABL fraction    //loop for fraction part of quotient
+cmp $r11 $r10    //check to see if we need to keep doing loop
+bge fractionEnd
+lsh $r5 $r5      // left shift quotient fraction
+cmp $r7 $r2      // compare LSB of dividend to LSB of divisor
+bge pass         
+cmp $r6 $r0
+ble fail
+LABL pass
+sub $r9 $r7 $r2
+subc $r8 $r6 $r1
+add $r6 $r8 $r0
+add $r7 $r9 $r0
+addi $r5 $r5 1
+LABL fail
+lsh $r7 $r7
+lshc $r6 $r6   //Test with this block out at first
+addi $r11 $r11 1
+jmp fraction
+LABL fractionEnd
+cmp $r6 $r0       //Round block also test with this out at first
+bgt rounding
+cmp $r7 $r2 
+blt noRounding
+LABL rounding
+addi $r5 $r5 1
+addc $r4 $r4 $r0
+addc $r3 $r3 $r0
+LABL noRounding    //End of round block
+jmp endZeros
+LABL zeros
+addi $r15 $r0 1
+sub $r3 $r0 $r15          // Roll over to 255
+sub $r4 $r0 $r15
+sub $r5 $r0 $r15
+LABL endZeros
+addi $r15 $r0 4
+st $r15 $r3
+addi $r15 $r0 5
+st $r15 $r4  
+addi $r15 $r0 6
+st $r15 $r5          
+add $r1 $r0 $r0
+add $r2 $r0 $r0
+add $r3 $r0 $r0
+add $r4 $r0 $r0
+add $r5 $r0 $r0
+add $r6 $r0 $r0
+add $r7 $r0 $r0
+add $r8 $r0 $r0
+add $r9 $r0 $r0
+add $r10 $r0 $r0
+add $r11 $r0 $r0
+add $r12 $r0 $r0
+add $r13 $r0 $r0
+add $r15 $r0 $r0        //registers cleared to start prog 3 PROGRAM 2 ENDS HERE
+add $r1 $r0 $r0        // useless instruction
+addi $r15 $r0 13
+ld $r1 $r15
+addi $r15 $r0 14
+ld $r2 $r15
+addi $r3 $r0 1
+cmp $r1 $r0
+bne sqrtNotZero
+cmp $r2 $r0
+beq sqrtZero
+LABL sqrtNotZero
+cmp $r3 $r0
+beq overFlow
+add $r7 $r5 $r0
+add $r6 $r4 $r0
+add $r4 $r0 $r0
+add $r5 $r0 $r0
+add $r8 $r0 $r0
+LABL innerLoop
+cmp $r8 $r3
+bge endInnerLoop
+add $r5 $r5 $r3
+addc $r4 $r4 $r0
+addi $r8 $r8 1
+jmp innerLoop
+LABL endInnerLoop
+cmp $r4 $r1
+bgt sqrtIF
+blt sqrtElse
+cmp $r5 $r2
+blt sqrtElse
+LABL sqrtIF
+addi $r9 $r0 1 // Set boolean flag true
+jmp elseEnd
+LABL sqrtElse
+addi $r3 $r3 1
+LABL elseEnd
+cmp $r9 $r0
+beq sqrtNotZero
+jmp sqrtEnd
+LABL sqrtZero
+add $r3 $r0 $r0
+jmp storing
+LABL overFlow
+addi $r15 $r0 1
+sub $r3 $r0 $r15
+jmp storing
+LABL sqrtEnd
+sub $r11 $r5 $r2
+subc $r10 $r4 $r1
+sub $r13 $r2 $r7
+subc $r12 $r1 $r6
+cmp $r10 $r12
+blt storing
+bgt sqrtEndIf
+cmp $r11 $r13
+ble storing
+LABL sqrtEndIf
+addi $r15 $r0 1
+sub $r3 $r3 $r15
+LABL storing
+addi $r15 $r0 15
+st $r15 $r3

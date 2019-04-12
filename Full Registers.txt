@@ -1,0 +1,46 @@
+
+Program 1
+// 1 MSB divsior
+// 2 LSB divisor
+
+// 3 MSB quotient
+// 4 LSB quotient
+
+// 5 MSB dividend
+// 6 LSB dividend
+
+// 7 MSB subtraction
+// 8 LSB subtraction
+
+// 9 counter for loop
+// 10 holds 16
+
+
+Program 2
+r1   MSB divisor                    // always zero by default
+r2   LSB divisor                    // load from address 2 
+r3   MSB quotient                   // storing this in address 4
+r4   LSB quotient                   // storing this in address 5
+r5   quotient fraction              // storing this in address 6
+r6   MSB dividend                   // load from address 0
+r7   LSB dividend                   // load from address 1
+r8   MSB subtraction
+r9   LSB subtraction
+r10  loop counter 
+r11  value to compare loop counter to
+
+
+Program 3
+r1 MSB of number (load from ADDR 13)
+r2 lSB of number (loade from ADDR 14)
+r3 sqrt (write to ADDR 15)
+r4 msb of sum
+r5 lsb of sum
+r6 msb of prev sum
+r7 lsb of prev sum
+r8 loop counter
+r9 for boolean flag
+r10 msb of greater
+r11 is lsb of greater
+r12 msb of less
+r13 lsb of less
